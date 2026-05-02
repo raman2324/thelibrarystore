@@ -385,6 +385,15 @@ function FeaturedProducts() {
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
+
+        <div className="mt-8 text-center">
+          <a
+            href="#"
+            className="inline-flex items-center gap-1 font-mono text-[13px] font-medium uppercase tracking-wider text-tls-blue-700 hover:underline"
+          >
+            View all 30,000 products <ArrowRight size={14} />
+          </a>
+        </div>
       </div>
     </section>
   );
@@ -435,7 +444,7 @@ function InstitutionsBand() {
               <a
                 key={c}
                 href="#"
-                className="rounded-md bg-paper-100/10 px-3 py-1.5 text-xs font-medium text-bone-50 ring-1 ring-bone-50/20 hover:bg-paper-100/20"
+                className="rounded-md bg-paper-100 px-3 py-1.5 text-xs font-medium text-ink-900 transition-colors hover:bg-bone-50"
               >
                 {c}
               </a>
