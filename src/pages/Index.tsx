@@ -1,17 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Award,
   BadgeCheck,
   Building2,
+  CheckCircle2,
   Cpu,
   FileText,
   FolderOpen,
   Library,
   MapPin,
+  Package,
   Phone,
+  PhoneCall,
   School,
+  Search,
   Shield,
+  ShieldCheck,
   Sofa,
   Sparkles,
   Trash2,
@@ -21,7 +26,6 @@ import {
 
 import { SiteHeader } from "@/components/tls/SiteHeader";
 import { SiteFooter } from "@/components/tls/SiteFooter";
-import { SearchBar } from "@/components/tls/SearchBar";
 import { ZoneTile } from "@/components/tls/ZoneTile";
 import { CategoryTile } from "@/components/tls/CategoryTile";
 import { ProductCard, type Product } from "@/components/tls/ProductCard";
@@ -42,47 +46,52 @@ import productBookcase from "@/assets/product-bookcase.jpg";
 import productJackets from "@/assets/product-jackets.jpg";
 import productLounge from "@/assets/product-lounge.jpg";
 import productMakertable from "@/assets/product-makertable.jpg";
+import productShelving from "@/assets/product-shelving.jpg";
+import productClassroom from "@/assets/product-classroom.jpg";
+import productSecurity from "@/assets/product-security.jpg";
+import productSignage from "@/assets/product-signage.jpg";
+import productOutdoor from "@/assets/product-outdoor.jpg";
 
 const ZONES = [
-  { number: "ZONE 01", name: "Elementary Library", subhead: "Low shelving, child-scale tables, story-time rugs.", image: zoneElementary },
-  { number: "ZONE 02", name: "Middle School Library", subhead: "Mixed shelving, study tables, soft-seating reading nooks.", image: zoneMiddle },
-  { number: "ZONE 03", name: "High School Library", subhead: "Tall steel shelving, study carrels, collaborative tables.", image: zoneHighschool },
-  { number: "ZONE 04", name: "Public Library", subhead: "Welcoming lounge, durable shelving, quiet reading rooms.", image: zonePublic },
-  { number: "ZONE 05", name: "Academic Library", subhead: "Compact storage, scholarly carrels, reference desks.", image: zoneAcademic },
-  { number: "ZONE 06", name: "Maker Space", subhead: "Mobile tables, tool storage, 3D printer stations.", image: zoneMaker },
-  { number: "ZONE 07", name: "Computer Lab", subhead: "Computer tables, ergonomic seating, cable management.", image: zoneComputer },
-  { number: "ZONE 08", name: "Outdoor Reading", subhead: "Picnic seating, shade structures, weatherproof furniture.", image: zoneOutdoor },
+  { number: "ZONE 01", name: "Elementary Library", subhead: "Low shelving · child tables · reading nook", image: zoneElementary },
+  { number: "ZONE 02", name: "Middle School Library", subhead: "Study tables · stack chairs · service desk", image: zoneMiddle },
+  { number: "ZONE 03", name: "High School Library", subhead: "Steel shelving · study carrels · task chairs", image: zoneHighschool },
+  { number: "ZONE 04", name: "Public Library", subhead: "Modular lounge · service counter · signage", image: zonePublic },
+  { number: "ZONE 05", name: "Academic Library", subhead: "Compact storage · scholarly carrels · reference desks", image: zoneAcademic },
+  { number: "ZONE 06", name: "Maker Space", subhead: "Maker tables · pegboard storage · 3D printer carts", image: zoneMaker },
+  { number: "ZONE 07", name: "Computer Lab", subhead: "Tech tables · task chairs · charging carts", image: zoneComputer },
+  { number: "ZONE 08", name: "Outdoor Reading", subhead: "Modular outdoor seating · shade · picnic tables", image: zoneOutdoor },
 ];
 
 const CATEGORIES = [
-  { icon: Library, name: "Library Furniture", subcategories: ["Bookcases", "Shelving", "Carrels", "Service Desks", "Library Tables"], count: "6,200 products" },
-  { icon: School, name: "Classroom Furniture", subcategories: ["Tables", "Chairs", "Stack Chairs", "Teacher Desks", "Storage"], count: "5,800 products" },
-  { icon: Sofa, name: "Soft Seating & Lounge", subcategories: ["Soft Seating", "Modular Lounge", "Outdoor Lounge", "Reading Nooks"], count: "1,900 products" },
-  { icon: FileText, name: "Library Supplies", subcategories: ["Book Pockets", "Jacket Covers", "Labels", "Mending", "Date-Due Cards"], count: "8,400 products" },
-  { icon: Shield, name: "Library Security", subcategories: ["3M RFID", "EM Security Strips", "Detection Systems", "Self-Check"], count: "640 products" },
-  { icon: Cpu, name: "STEM & Makerspace", subcategories: ["Maker Tables", "3D Printers", "STEM Kits", "Robotics", "Tool Storage"], count: "2,100 products" },
-  { icon: BadgeCheck, name: "Signage & Displays", subcategories: ["Wayfinding", "Acrylic Signs", "Bulletin Boards", "Display Cases"], count: "1,400 products" },
-  { icon: Sparkles, name: "Outdoor Furniture", subcategories: ["Picnic Tables", "Benches", "Shade Structures", "Trash Receptacles"], count: "980 products" },
+  { icon: Library, name: "Library Furniture", subcategories: ["Bookcases", "Shelving", "Carrels", "Service Desks", "Library Tables"], count: "6,200 products", productImage: productShelving },
+  { icon: FileText, name: "Library Supplies", subcategories: ["Book Pockets", "Jacket Covers", "Labels", "Mending", "Date-Due Cards"], count: "8,400 products", productImage: productJackets },
+  { icon: School, name: "Classroom Furniture", subcategories: ["Tables", "Chairs", "Stack Chairs", "Teacher Desks", "Storage"], count: "5,800 products", productImage: productClassroom },
+  { icon: Sofa, name: "Soft Seating & Lounge", subcategories: ["Soft Seating", "Modular Lounge", "Outdoor Lounge", "Reading Nooks"], count: "1,900 products", productImage: productLounge },
+  { icon: Shield, name: "Library Security", subcategories: ["3M RFID", "EM Security Strips", "Detection Systems", "Self-Check"], count: "640 products", productImage: productSecurity },
+  { icon: Cpu, name: "STEM & Makerspace", subcategories: ["Maker Tables", "3D Printers", "STEM Kits", "Robotics", "Tool Storage"], count: "2,100 products", productImage: productMakertable },
+  { icon: BadgeCheck, name: "Signage & Displays", subcategories: ["Wayfinding", "Acrylic Signs", "Bulletin Boards", "Display Cases"], count: "1,400 products", productImage: productSignage },
+  { icon: Sparkles, name: "Outdoor Furniture", subcategories: ["Picnic Tables", "Benches", "Shade Structures", "Trash Receptacles"], count: "980 products", productImage: productOutdoor },
 ];
 
 const PRODUCTS: Product[] = [
   { id: "1", name: "Estey Steel Single-Faced Bookcase, 5-Shelf 60\" Oak Finish", brand: "Estey", itemNumber: "EST-90234-OAK", price: 489.0, bulkFrom: { qty: 10, price: 449.0 }, image: productBookcase, status: "in-stock", isMadeInUSA: true },
-  { id: "2", name: "TLS Clear Mylar Book Jacket Covers, 10\" × 18\" (Roll of 100)", brand: "TLS", itemNumber: "TLS-BP-1000", price: 64.5, bulkFrom: { qty: 25, price: 58.95 }, image: productJackets, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
+  { id: "2", name: "TLS Clear Mylar Book Jacket Covers (Roll of 100)", brand: "TLS", itemNumber: "TLS-BP-1000", price: 64.5, bulkFrom: { qty: 25, price: 58.95 }, image: productJackets, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
   { id: "3", name: "OFM Modular Lounge Chair, Teal Upholstery, GREENGUARD Gold", brand: "OFM", itemNumber: "OFM-ML4-TEAL", price: 1249.0, bulkFrom: { qty: 4, price: 1149.0 }, image: productLounge, status: "backorder", isGREENGUARD: true },
-  { id: "4", name: "Maker Pro Mobile Workbench with Pegboard & Tool Storage", brand: "TLS", itemNumber: "TLS-MK-WB48", price: 879.0, bulkFrom: { qty: 5, price: 799.0 }, image: productMakertable, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
-  { id: "5", name: "Estey Double-Faced Steel Shelving 84\" High, Cherry Laminate", brand: "Estey", itemNumber: "EST-DF84-CHE", price: 1389.0, bulkFrom: { qty: 6, price: 1279.0 }, image: productBookcase, status: "quote" },
-  { id: "6", name: "TLS Heavy-Duty Card Pockets, Adhesive-Back (Box of 1,000)", brand: "TLS", itemNumber: "TLS-CP-1000", price: 42.0, bulkFrom: { qty: 10, price: 37.5 }, image: productJackets, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
-  { id: "7", name: "tenjam Outdoor Modular Lounge, Weatherproof Frame", brand: "tenjam", itemNumber: "TJM-OL-MOD", price: 2149.0, bulkFrom: { qty: 3, price: 1989.0 }, image: productLounge, status: "backorder" },
-  { id: "8", name: "STEM Discovery Cart with Locking Casters & 6 Bin Slots", brand: "TLS", itemNumber: "TLS-STM-CART6", price: 549.0, bulkFrom: { qty: 4, price: 499.0 }, image: productMakertable, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
+  { id: "4", name: "Maker Pro Mobile Workbench with Pegboard", brand: "TLS", itemNumber: "TLS-MK-WB48", price: 879.0, bulkFrom: { qty: 5, price: 799.0 }, image: productMakertable, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
+  { id: "5", name: "tenjam Outdoor Sectional, Modular", brand: "tenjam", itemNumber: "TJM-OL-MOD", price: 2489.0, image: productOutdoor, status: "quote" },
+  { id: "6", name: "3M RFID Library Security Detection System", brand: "3M", itemNumber: "3M-RFID-DS01", price: 14500.0, image: productSecurity, status: "quote" },
+  { id: "7", name: "Smith System Cascade Mega-Tower Storage", brand: "Smith System", itemNumber: "SMS-CSC-MTWR", price: 1099.0, bulkFrom: { qty: 4, price: 999.0 }, image: productClassroom, status: "in-stock", isMadeInUSA: true },
+  { id: "8", name: "TLS Pre-Cut Book Pockets, 3 5/8\" × 5 5/16\" (Box of 1,000)", brand: "TLS", itemNumber: "TLS-CP-1000", price: 89.0, bulkFrom: { qty: 10, price: 79.5 }, image: productJackets, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
 ];
 
 const TRUST_ITEMS = [
-  "30,000+ Products",
-  "40+ Brands",
-  "Made-in-USA TLS Line",
-  "Satisfaction Guarantee",
-  "Free Shipping over $1,500",
-  "Live Customer Care 800.548.7204",
+  { icon: Package, label: "30,000+ Products" },
+  { icon: Award, label: "40+ Brands" },
+  { icon: MapPin, label: "Made in USA · TLS Line" },
+  { icon: ShieldCheck, label: "Satisfaction Guarantee" },
+  { icon: Truck, label: "Free Shipping over $1,500" },
+  { icon: PhoneCall, label: "800.548.7204 · Live Customer Care" },
 ];
 
 const PRODUCT_TABS = ["All", "New", "Best Sellers", "TLS Brand", "On Sale", "Quick-Ship", "Made in USA"];
@@ -122,6 +131,25 @@ const ARTICLES = [
   { title: "Outdoor reading zones: 6 layouts that work", meta: "10 MIN READ · MAR 2026" },
   { title: "Inside the TLS factory: how a book pocket is made", meta: "VIDEO · 5:42" },
 ];
+
+const ANNOUNCEMENTS = [
+  {
+    text: "Spring Catalog · Issue 41 — Free for institutions",
+    cta: "Request a copy →",
+    accent: true,
+  },
+  {
+    text: "Free standard shipping on orders over $1,500 in the contiguous US.",
+    cta: "Shipping details →",
+    accent: false,
+  },
+  {
+    text: "Need a sole-source letter or W-9?",
+    cta: "Visit Institutions →",
+    accent: false,
+  },
+];
+
 
 function AnnouncementBar() {
   return (
