@@ -1,17 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Award,
   BadgeCheck,
   Building2,
+  CheckCircle2,
   Cpu,
   FileText,
   FolderOpen,
   Library,
   MapPin,
+  Package,
   Phone,
+  PhoneCall,
   School,
+  Search,
   Shield,
+  ShieldCheck,
   Sofa,
   Sparkles,
   Trash2,
@@ -21,7 +26,6 @@ import {
 
 import { SiteHeader } from "@/components/tls/SiteHeader";
 import { SiteFooter } from "@/components/tls/SiteFooter";
-import { SearchBar } from "@/components/tls/SearchBar";
 import { ZoneTile } from "@/components/tls/ZoneTile";
 import { CategoryTile } from "@/components/tls/CategoryTile";
 import { ProductCard, type Product } from "@/components/tls/ProductCard";
@@ -42,47 +46,52 @@ import productBookcase from "@/assets/product-bookcase.jpg";
 import productJackets from "@/assets/product-jackets.jpg";
 import productLounge from "@/assets/product-lounge.jpg";
 import productMakertable from "@/assets/product-makertable.jpg";
+import productShelving from "@/assets/product-shelving.jpg";
+import productClassroom from "@/assets/product-classroom.jpg";
+import productSecurity from "@/assets/product-security.jpg";
+import productSignage from "@/assets/product-signage.jpg";
+import productOutdoor from "@/assets/product-outdoor.jpg";
 
 const ZONES = [
-  { number: "ZONE 01", name: "Elementary Library", subhead: "Low shelving, child-scale tables, story-time rugs.", image: zoneElementary },
-  { number: "ZONE 02", name: "Middle School Library", subhead: "Mixed shelving, study tables, soft-seating reading nooks.", image: zoneMiddle },
-  { number: "ZONE 03", name: "High School Library", subhead: "Tall steel shelving, study carrels, collaborative tables.", image: zoneHighschool },
-  { number: "ZONE 04", name: "Public Library", subhead: "Welcoming lounge, durable shelving, quiet reading rooms.", image: zonePublic },
-  { number: "ZONE 05", name: "Academic Library", subhead: "Compact storage, scholarly carrels, reference desks.", image: zoneAcademic },
-  { number: "ZONE 06", name: "Maker Space", subhead: "Mobile tables, tool storage, 3D printer stations.", image: zoneMaker },
-  { number: "ZONE 07", name: "Computer Lab", subhead: "Computer tables, ergonomic seating, cable management.", image: zoneComputer },
-  { number: "ZONE 08", name: "Outdoor Reading", subhead: "Picnic seating, shade structures, weatherproof furniture.", image: zoneOutdoor },
+  { number: "ZONE 01", name: "Elementary Library", subhead: "Low shelving · child tables · reading nook", image: zoneElementary },
+  { number: "ZONE 02", name: "Middle School Library", subhead: "Study tables · stack chairs · service desk", image: zoneMiddle },
+  { number: "ZONE 03", name: "High School Library", subhead: "Steel shelving · study carrels · task chairs", image: zoneHighschool },
+  { number: "ZONE 04", name: "Public Library", subhead: "Modular lounge · service counter · signage", image: zonePublic },
+  { number: "ZONE 05", name: "Academic Library", subhead: "Compact storage · scholarly carrels · reference desks", image: zoneAcademic },
+  { number: "ZONE 06", name: "Maker Space", subhead: "Maker tables · pegboard storage · 3D printer carts", image: zoneMaker },
+  { number: "ZONE 07", name: "Computer Lab", subhead: "Tech tables · task chairs · charging carts", image: zoneComputer },
+  { number: "ZONE 08", name: "Outdoor Reading", subhead: "Modular outdoor seating · shade · picnic tables", image: zoneOutdoor },
 ];
 
 const CATEGORIES = [
-  { icon: Library, name: "Library Furniture", subcategories: ["Bookcases", "Shelving", "Carrels", "Service Desks", "Library Tables"], count: "6,200 products" },
-  { icon: School, name: "Classroom Furniture", subcategories: ["Tables", "Chairs", "Stack Chairs", "Teacher Desks", "Storage"], count: "5,800 products" },
-  { icon: Sofa, name: "Soft Seating & Lounge", subcategories: ["Soft Seating", "Modular Lounge", "Outdoor Lounge", "Reading Nooks"], count: "1,900 products" },
-  { icon: FileText, name: "Library Supplies", subcategories: ["Book Pockets", "Jacket Covers", "Labels", "Mending", "Date-Due Cards"], count: "8,400 products" },
-  { icon: Shield, name: "Library Security", subcategories: ["3M RFID", "EM Security Strips", "Detection Systems", "Self-Check"], count: "640 products" },
-  { icon: Cpu, name: "STEM & Makerspace", subcategories: ["Maker Tables", "3D Printers", "STEM Kits", "Robotics", "Tool Storage"], count: "2,100 products" },
-  { icon: BadgeCheck, name: "Signage & Displays", subcategories: ["Wayfinding", "Acrylic Signs", "Bulletin Boards", "Display Cases"], count: "1,400 products" },
-  { icon: Sparkles, name: "Outdoor Furniture", subcategories: ["Picnic Tables", "Benches", "Shade Structures", "Trash Receptacles"], count: "980 products" },
+  { icon: Library, name: "Library Furniture", subcategories: ["Bookcases", "Shelving", "Carrels", "Service Desks", "Library Tables"], count: "6,200 products", productImage: productShelving },
+  { icon: FileText, name: "Library Supplies", subcategories: ["Book Pockets", "Jacket Covers", "Labels", "Mending", "Date-Due Cards"], count: "8,400 products", productImage: productJackets },
+  { icon: School, name: "Classroom Furniture", subcategories: ["Tables", "Chairs", "Stack Chairs", "Teacher Desks", "Storage"], count: "5,800 products", productImage: productClassroom },
+  { icon: Sofa, name: "Soft Seating & Lounge", subcategories: ["Soft Seating", "Modular Lounge", "Outdoor Lounge", "Reading Nooks"], count: "1,900 products", productImage: productLounge },
+  { icon: Shield, name: "Library Security", subcategories: ["3M RFID", "EM Security Strips", "Detection Systems", "Self-Check"], count: "640 products", productImage: productSecurity },
+  { icon: Cpu, name: "STEM & Makerspace", subcategories: ["Maker Tables", "3D Printers", "STEM Kits", "Robotics", "Tool Storage"], count: "2,100 products", productImage: productMakertable },
+  { icon: BadgeCheck, name: "Signage & Displays", subcategories: ["Wayfinding", "Acrylic Signs", "Bulletin Boards", "Display Cases"], count: "1,400 products", productImage: productSignage },
+  { icon: Sparkles, name: "Outdoor Furniture", subcategories: ["Picnic Tables", "Benches", "Shade Structures", "Trash Receptacles"], count: "980 products", productImage: productOutdoor },
 ];
 
 const PRODUCTS: Product[] = [
   { id: "1", name: "Estey Steel Single-Faced Bookcase, 5-Shelf 60\" Oak Finish", brand: "Estey", itemNumber: "EST-90234-OAK", price: 489.0, bulkFrom: { qty: 10, price: 449.0 }, image: productBookcase, status: "in-stock", isMadeInUSA: true },
-  { id: "2", name: "TLS Clear Mylar Book Jacket Covers, 10\" × 18\" (Roll of 100)", brand: "TLS", itemNumber: "TLS-BP-1000", price: 64.5, bulkFrom: { qty: 25, price: 58.95 }, image: productJackets, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
+  { id: "2", name: "TLS Clear Mylar Book Jacket Covers (Roll of 100)", brand: "TLS", itemNumber: "TLS-BP-1000", price: 64.5, bulkFrom: { qty: 25, price: 58.95 }, image: productJackets, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
   { id: "3", name: "OFM Modular Lounge Chair, Teal Upholstery, GREENGUARD Gold", brand: "OFM", itemNumber: "OFM-ML4-TEAL", price: 1249.0, bulkFrom: { qty: 4, price: 1149.0 }, image: productLounge, status: "backorder", isGREENGUARD: true },
-  { id: "4", name: "Maker Pro Mobile Workbench with Pegboard & Tool Storage", brand: "TLS", itemNumber: "TLS-MK-WB48", price: 879.0, bulkFrom: { qty: 5, price: 799.0 }, image: productMakertable, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
-  { id: "5", name: "Estey Double-Faced Steel Shelving 84\" High, Cherry Laminate", brand: "Estey", itemNumber: "EST-DF84-CHE", price: 1389.0, bulkFrom: { qty: 6, price: 1279.0 }, image: productBookcase, status: "quote" },
-  { id: "6", name: "TLS Heavy-Duty Card Pockets, Adhesive-Back (Box of 1,000)", brand: "TLS", itemNumber: "TLS-CP-1000", price: 42.0, bulkFrom: { qty: 10, price: 37.5 }, image: productJackets, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
-  { id: "7", name: "tenjam Outdoor Modular Lounge, Weatherproof Frame", brand: "tenjam", itemNumber: "TJM-OL-MOD", price: 2149.0, bulkFrom: { qty: 3, price: 1989.0 }, image: productLounge, status: "backorder" },
-  { id: "8", name: "STEM Discovery Cart with Locking Casters & 6 Bin Slots", brand: "TLS", itemNumber: "TLS-STM-CART6", price: 549.0, bulkFrom: { qty: 4, price: 499.0 }, image: productMakertable, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
+  { id: "4", name: "Maker Pro Mobile Workbench with Pegboard", brand: "TLS", itemNumber: "TLS-MK-WB48", price: 879.0, bulkFrom: { qty: 5, price: 799.0 }, image: productMakertable, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
+  { id: "5", name: "tenjam Outdoor Sectional, Modular", brand: "tenjam", itemNumber: "TJM-OL-MOD", price: 2489.0, image: productOutdoor, status: "quote" },
+  { id: "6", name: "3M RFID Library Security Detection System", brand: "3M", itemNumber: "3M-RFID-DS01", price: 14500.0, image: productSecurity, status: "quote" },
+  { id: "7", name: "Smith System Cascade Mega-Tower Storage", brand: "Smith System", itemNumber: "SMS-CSC-MTWR", price: 1099.0, bulkFrom: { qty: 4, price: 999.0 }, image: productClassroom, status: "in-stock", isMadeInUSA: true },
+  { id: "8", name: "TLS Pre-Cut Book Pockets, 3 5/8\" × 5 5/16\" (Box of 1,000)", brand: "TLS", itemNumber: "TLS-CP-1000", price: 89.0, bulkFrom: { qty: 10, price: 79.5 }, image: productJackets, status: "in-stock", isTLSBrand: true, isMadeInUSA: true },
 ];
 
 const TRUST_ITEMS = [
-  "30,000+ Products",
-  "40+ Brands",
-  "Made-in-USA TLS Line",
-  "Satisfaction Guarantee",
-  "Free Shipping over $1,500",
-  "Live Customer Care 800.548.7204",
+  { icon: Package, label: "30,000+ Products" },
+  { icon: Award, label: "40+ Brands" },
+  { icon: MapPin, label: "Made in USA · TLS Line" },
+  { icon: ShieldCheck, label: "Satisfaction Guarantee" },
+  { icon: Truck, label: "Free Shipping over $1,500" },
+  { icon: PhoneCall, label: "800.548.7204 · Live Customer Care" },
 ];
 
 const PRODUCT_TABS = ["All", "New", "Best Sellers", "TLS Brand", "On Sale", "Quick-Ship", "Made in USA"];
@@ -123,14 +132,49 @@ const ARTICLES = [
   { title: "Inside the TLS factory: how a book pocket is made", meta: "VIDEO · 5:42" },
 ];
 
+const ANNOUNCEMENTS = [
+  {
+    text: "Spring Catalog · Issue 41 — Free for institutions",
+    cta: "Request a copy →",
+    accent: true,
+  },
+  {
+    text: "Free standard shipping on orders over $1,500 in the contiguous US.",
+    cta: "Shipping details →",
+    accent: false,
+  },
+  {
+    text: "Need a sole-source letter or W-9?",
+    cta: "Visit Institutions →",
+    accent: false,
+  },
+];
+
+
 function AnnouncementBar() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setI((v) => (v + 1) % ANNOUNCEMENTS.length), 6000);
+    return () => clearInterval(id);
+  }, []);
+  const a = ANNOUNCEMENTS[i];
   return (
-    <div className="border-b border-line-200 bg-paper-100">
+    <div
+      className={`border-b border-line-200 ${a.accent ? "bg-tls-amber-100" : "bg-paper-100"}`}
+    >
       <div className="container-tls flex h-9 items-center justify-center text-center text-[12px] text-ink-700">
         <span>
-          Free standard shipping on orders over $1,500 in the contiguous US ·{" "}
-          <a href="#" className="font-medium text-tls-blue-700 hover:underline">
-            Need a sole-source letter or W-9? Visit Institutions →
+          {a.accent && (
+            <span className="mr-2 inline-flex items-center rounded-md bg-tls-amber-600 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-white">
+              New
+            </span>
+          )}
+          {a.text} ·{" "}
+          <a
+            href="#"
+            className={`font-medium hover:underline ${a.accent ? "text-tls-amber-600" : "text-tls-blue-700"}`}
+          >
+            {a.cta}
           </a>
         </span>
       </div>
@@ -141,82 +185,86 @@ function AnnouncementBar() {
 function Hero() {
   return (
     <section className="relative overflow-hidden bg-bone-50">
-      {/* Background photo */}
+      {/* Background photo — 60vh, visible on right where institutions card overlays */}
       <div className="absolute inset-0">
         <img
           src={heroLibrary}
           alt=""
           aria-hidden
-          className="h-full w-full object-cover opacity-40"
+          className="h-full w-full object-cover"
           width={1920}
           height={1080}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-bone-50 via-bone-50/85 to-bone-50/30" />
-        <div className="absolute inset-y-0 right-0 hidden w-1/3 bg-gradient-to-l from-tls-blue-900/40 to-transparent lg:block" />
+        {/* Left-only gradient: bone-50 (left) → transparent (right) */}
+        <div className="absolute inset-0 bg-gradient-to-r from-bone-50 via-bone-50/85 to-transparent" />
       </div>
 
-      <div className="container-tls relative grid grid-cols-1 gap-10 py-14 lg:grid-cols-5 lg:gap-12 lg:py-24">
+      <div className="container-tls relative grid min-h-[60vh] grid-cols-1 gap-10 py-14 lg:grid-cols-5 lg:gap-12 lg:py-20">
         {/* Left zone */}
         <div className="lg:col-span-3">
           <div className="eyebrow">30,000+ PRODUCTS · 40+ BRANDS · SINCE THE 1980s</div>
-          <h1 className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-ink-900 md:text-5xl lg:text-[58px]">
+          <h1 className="mt-5 max-w-[18ch] text-4xl font-bold leading-[1.05] tracking-tight text-ink-900 md:text-5xl lg:text-[56px]">
             Everything you need for today's library, classroom, and maker space.
           </h1>
-          <p className="mt-5 max-w-prose-tls text-lg text-ink-500">
+          <p className="mt-5 max-w-prose-tls text-[18px] leading-relaxed text-ink-500">
             Furniture, supplies, security, signage, and STEM — sourced for schools, public libraries,
             and academic institutions. Quote-ready, procurement-friendly, made for institutions that
             buy in bulk.
           </p>
 
-          <div className="mt-7 max-w-2xl">
-            <SearchBar
-              size="lg"
-              placeholder="Search products, item numbers, or catalog codes…"
-            />
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <a
+              href="#"
+              className="inline-flex items-center gap-2 rounded-md bg-tls-teal-700 px-5 py-3 text-[15px] font-medium text-white hover:bg-tls-teal-700/90"
+            >
+              <Search size={16} /> Browse the catalog
+            </a>
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap gap-2">
             {[
               "Shop by Zone",
               "Shop by Brand",
-              "Browse the catalog",
+              "Request a free catalog",
             ].map((t) => (
               <a
                 key={t}
                 href="#"
-                className="inline-flex items-center gap-1 rounded-md border border-tls-blue-700 bg-white/80 px-3 py-1.5 text-sm font-medium text-tls-blue-700 backdrop-blur transition-colors hover:bg-tls-blue-50"
+                className="inline-flex items-center gap-1 rounded-md border border-tls-blue-700 bg-white/80 px-3 py-1.5 font-mono text-[13px] font-medium uppercase tracking-wider text-tls-blue-700 backdrop-blur transition-colors hover:bg-tls-blue-50"
               >
-                {t} <ArrowRight size={14} />
+                {t} <ArrowRight size={13} />
               </a>
             ))}
           </div>
         </div>
 
-        {/* Right zone — institutions */}
+        {/* Right zone — institutions card */}
         <aside className="lg:col-span-2">
-          <div className="rounded-md border border-line-200 bg-paper-100/95 p-6 shadow-sm backdrop-blur">
-            <div className="eyebrow">FOR INSTITUTIONS</div>
-            <h2 className="mt-2 text-2xl font-semibold text-ink-900">Procurement made simple.</h2>
+          <div className="rounded-md border border-line-200 bg-paper-100 p-6">
+            <div className="eyebrow-blue">FOR INSTITUTIONS</div>
+            <h2 className="mt-2 text-[24px] font-semibold leading-tight text-ink-900">
+              Procurement made simple.
+            </h2>
+            <p className="mt-3 text-[14px] leading-relaxed text-ink-500">
+              Same-day quotes. Sole-source letters in under 24 hours. Net-30 for verified
+              institutions. PO upload at checkout.
+            </p>
 
-            <div className="mt-4 grid grid-cols-4 gap-2 text-tls-blue-700">
-              {[FileText, Building2, FileText, BadgeCheck].map((Icon, i) => (
-                <div key={i} className="flex aspect-square items-center justify-center rounded-md bg-white">
-                  <Icon size={20} strokeWidth={1.75} />
-                </div>
-              ))}
-            </div>
-
-            <ul className="mt-5 space-y-2.5 text-sm">
+            <ul className="mt-5 divide-y divide-line-200 border-y border-line-200">
               {[
-                "Request a quote",
-                "Sole source letter",
-                "Download W-9",
-                "NET-30 application",
-              ].map((label) => (
+                { icon: FileText, label: "Request a quote" },
+                { icon: BadgeCheck, label: "Sole source letter" },
+                { icon: Building2, label: "Download W-9" },
+                { icon: CheckCircle2, label: "NET-30 application" },
+              ].map(({ icon: Icon, label }) => (
                 <li key={label}>
-                  <a href="#" className="flex items-center justify-between text-ink-900 hover:text-tls-blue-700">
-                    <span>{label}</span>
-                    <ArrowRight size={14} />
+                  <a
+                    href="#"
+                    className="flex h-11 items-center gap-3 text-[14px] text-ink-900 hover:text-tls-blue-700"
+                  >
+                    <Icon size={16} className="text-tls-blue-700" />
+                    <span className="flex-1">{label}</span>
+                    <ArrowRight size={14} className="text-ink-400" />
                   </a>
                 </li>
               ))}
@@ -238,16 +286,25 @@ function Hero() {
 function TrustStrip() {
   return (
     <section className="border-y border-line-200 bg-paper-100" aria-label="Why TLS">
-      <div className="container-tls flex flex-wrap items-center justify-between gap-x-8 gap-y-3 py-4">
-        {TRUST_ITEMS.map((item) => (
-          <div key={item} className="font-mono text-[11px] uppercase tracking-wider text-ink-700">
-            ✓ {item}
+      <div className="container-tls grid h-auto grid-cols-2 items-stretch gap-y-2 py-3 sm:grid-cols-3 lg:flex lg:h-16 lg:gap-y-0 lg:py-0">
+        {TRUST_ITEMS.map(({ icon: Icon, label }, idx) => (
+          <div
+            key={label}
+            className={`flex flex-1 items-center justify-center gap-2 px-4 ${
+              idx > 0 ? "lg:border-l lg:border-line-200" : ""
+            }`}
+          >
+            <Icon size={16} className="shrink-0 text-tls-teal-700" aria-hidden />
+            <span className="font-mono text-[10px] uppercase tracking-[0.05em] text-ink-700 lg:text-[12px]">
+              {label}
+            </span>
           </div>
         ))}
       </div>
     </section>
   );
 }
+
 
 function ShopByZone() {
   return (
@@ -328,6 +385,15 @@ function FeaturedProducts() {
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
+
+        <div className="mt-8 text-center">
+          <a
+            href="#"
+            className="inline-flex items-center gap-1 font-mono text-[13px] font-medium uppercase tracking-wider text-tls-blue-700 hover:underline"
+          >
+            View all 30,000 products <ArrowRight size={14} />
+          </a>
+        </div>
       </div>
     </section>
   );
@@ -378,7 +444,7 @@ function InstitutionsBand() {
               <a
                 key={c}
                 href="#"
-                className="rounded-md bg-paper-100/10 px-3 py-1.5 text-xs font-medium text-bone-50 ring-1 ring-bone-50/20 hover:bg-paper-100/20"
+                className="rounded-md bg-paper-100 px-3 py-1.5 text-xs font-medium text-ink-900 transition-colors hover:bg-bone-50"
               >
                 {c}
               </a>

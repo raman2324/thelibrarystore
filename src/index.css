@@ -112,6 +112,9 @@
   .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 
   .eyebrow {
+    @apply text-[11px] uppercase tracking-[0.12em] font-medium font-mono text-tls-amber-600;
+  }
+  .eyebrow-blue {
     @apply text-[11px] uppercase tracking-[0.12em] font-medium font-mono text-tls-blue-700;
   }
   .eyebrow-light {
