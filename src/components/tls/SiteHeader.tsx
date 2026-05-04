@@ -80,10 +80,10 @@ export function SiteHeader() {
       </div>
 
       {/* Main row */}
-      <div className="container-tls flex h-[76px] items-center gap-6">
+      <div className="container-tls flex h-[96px] items-center gap-6">
         {/* Logo */}
         <a href="/" className="flex items-center" aria-label="The Library Store home">
-          <img src={tlsLogo} alt="The Library Store" className="h-12 w-auto" />
+          <img src={tlsLogo} alt="The Library Store" className="h-20 w-auto" />
         </a>
 
         {/* Search */}
