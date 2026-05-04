@@ -12,6 +12,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { SearchBar } from "./SearchBar";
+import tlsLogo from "@/assets/tls-logo.png";
 import {
   Dialog,
   DialogContent,
@@ -81,16 +82,8 @@ export function SiteHeader() {
       {/* Main row */}
       <div className="container-tls flex h-[76px] items-center gap-6">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2.5" aria-label="The Library Store home">
-          <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-tls-blue-900 text-bone-50">
-            <span className="font-mono text-sm font-bold tracking-tight">TLS</span>
-          </div>
-          <div className="hidden flex-col leading-tight sm:flex">
-            <span className="text-[10px] uppercase tracking-[0.18em] text-ink-500">The</span>
-            <span className="text-sm font-semibold uppercase tracking-[0.08em] text-tls-blue-900">
-              Library Store
-            </span>
-          </div>
+        <a href="/" className="flex items-center" aria-label="The Library Store home">
+          <img src={tlsLogo} alt="The Library Store" className="h-12 w-auto" />
         </a>
 
         {/* Search */}
